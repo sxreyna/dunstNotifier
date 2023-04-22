@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+
+p=$($HOME/scripts/percent $1)
+
+aup="pactl set-sink-volume @DEFAULT_SINK@ +1%"
+adown="pactl set-sink-volume @DEFAULT_SINK@ -1%"
+muted="pamixer --get-volume-human"
+
+bup="brightnessctl s 2%+"
+bdown="brightnessctl s 2%-"
+
+if [[ "$1" == "brightness" ]]; then
+  if [[ "$2" == "inc" ]]; then
+    $bup
+    dunstify -t 2000 -h int:value:$(( $p+0 )) 'Brightness'
+    sleep 0.003
+    $bup
+    dunstify -t 2000 -h int:value:$(($p+2)) 'Brightness'
+    sleep 0.003 
+    $bup
+    dunstify -t 2000 -h int:value:$(($p+4)) 'Brightness'
+    sleep 0.003
+    $bup
+    dunstify -t 2000 -h int:value:$(($p+6)) 'Brightness'
+    sleep 0.003 
+    $bup
+    dunstify -t 2000 -h int:value:$(($p+8)) 'Brightness'
+  elif [[ "$2" == "dec" ]]; then
+    $bdown
+    dunstify -t 2000 -h int:value:$(( $p-0 )) 'Brightness'
+    sleep 0.003
+    $bdown
+    dunstify -t 2000 -h int:value:$(($p-2)) 'Brightness'
+    sleep 0.003 
+    $bdown
+    dunstify -t 2000 -h int:value:$(($p-4)) 'Brightness'
+    sleep 0.003
+    $bdown
+    dunstify -t 2000 -h int:value:$(($p-6)) 'Brightness'
+    sleep 0.003 
+    $bdown
+    dunstify -t 2000 -h int:value:$(($p-8)) 'Brightness'
+  fi
+elif [[ "$1" == "audio" ]]; then
+  if [[ "$2" == "inc" ]]; then
+    for a in {1..5}; do
+      $aup
+      dunstify -t 2000 -h int:value:$(( $p+$a )) 'Audio'
+      sleep 0.003
+    done
+  elif [[ "$2" == "dec" ]]; then
+    for a in {1..5}; do
+      $adown
+      dunstify -t 2000 -h int:value:$(( $p-$a )) 'Audio'
+      sleep 0.003
+    done
+  elif [[ "$2" == "mute" ]]; then
+    if [[ $(pamixer --get-volume-human) == "muted" ]]; then
+      pactl set-sink-mute @DEFAULT_SINK@ toggle
+      killall dunst
+      dunstify -u urgent -t 2000 -h int:value:$(pamixer --get-volume-human) 'Unmuted  '
+    else
+      pactl set-sink-mute @DEFAULT_SINK@ toggle
+      dunstify -u critical -t 0 "Muted  "
+    fi
+  fi
+fi
