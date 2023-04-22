@@ -11,35 +11,17 @@ bdown="brightnessctl s 2%-"
 
 if [[ "$1" == "brightness" ]]; then
   if [[ "$2" == "inc" ]]; then
-    $bup
-    dunstify -t 2000 -h int:value:$(( $p+0 )) 'Brightness'
-    sleep 0.003
-    $bup
-    dunstify -t 2000 -h int:value:$(($p+2)) 'Brightness'
-    sleep 0.003 
-    $bup
-    dunstify -t 2000 -h int:value:$(($p+4)) 'Brightness'
-    sleep 0.003
-    $bup
-    dunstify -t 2000 -h int:value:$(($p+6)) 'Brightness'
-    sleep 0.003 
-    $bup
-    dunstify -t 2000 -h int:value:$(($p+8)) 'Brightness'
+    for x in {1..5}; do
+      $bup
+      dunstify -t 2000 -h int:value:$(($p+8)) 'Brightness'
+      sleep 0.003
+    done
   elif [[ "$2" == "dec" ]]; then
-    $bdown
-    dunstify -t 2000 -h int:value:$(( $p-0 )) 'Brightness'
-    sleep 0.003
-    $bdown
-    dunstify -t 2000 -h int:value:$(($p-2)) 'Brightness'
-    sleep 0.003 
-    $bdown
-    dunstify -t 2000 -h int:value:$(($p-4)) 'Brightness'
-    sleep 0.003
-    $bdown
-    dunstify -t 2000 -h int:value:$(($p-6)) 'Brightness'
-    sleep 0.003 
-    $bdown
-    dunstify -t 2000 -h int:value:$(($p-8)) 'Brightness'
+    for x in {1..5}; do
+      $bdown
+      dunstify -t 2000 -h int:value:$(($p-8)) 'Brightness'
+      sleep 0.003
+    done
   fi
 elif [[ "$1" == "audio" ]]; then
   if [[ "$2" == "inc" ]]; then
